@@ -1,3 +1,3 @@
 # Nekochan
 
-A 4chan client made with Flutter.
+A 4chan app made with Flutter.
