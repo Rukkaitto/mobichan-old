@@ -1,0 +1,71 @@
+import 'package:flutter/material.dart';
+import 'package:nekochan/classes/board.dart';
+import 'package:nekochan/classes/data.dart';
+import 'package:nekochan/constants.dart';
+import 'package:nekochan/screens/board_screen.dart';
+import 'package:nekochan/utilities/networking.dart';
+import 'package:provider/provider.dart';
+
+final String url = 'https://a.4cdn.org/boards.json';
+
+class BoardListScreen extends StatefulWidget {
+  static final String id = 'boardlist';
+  final List<Board> boards;
+
+  BoardListScreen(this.boards);
+
+  @override
+  _BoardListScreenState createState() => _BoardListScreenState();
+}
+
+class _BoardListScreenState extends State<BoardListScreen> {
+  @override
+  Widget build(BuildContext context) {
+    List<Board> boards = widget.boards;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Boards',
+          style: kAppBarTitleTextStyle,
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: boards.length,
+        padding: EdgeInsets.symmetric(vertical: 20.0),
+        itemBuilder: (BuildContext context, int index) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              FlatButton(
+                child: Text(
+                  '/${boards[index].letter}/ - ${boards[index].title}',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffaf0a0f),
+                  ),
+                ),
+                onPressed: () {
+                  Provider.of<Data>(context, listen: false).setCurrentBoard(
+                      boards[index].letter, boards[index].title);
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName(BoardScreen.id),
+                  );
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                child: Divider(
+                  thickness: 2.0,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
