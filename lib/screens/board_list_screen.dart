@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nekochan/classes/board.dart';
-import 'package:nekochan/classes/data.dart';
 import 'package:nekochan/constants.dart';
 import 'package:nekochan/screens/board_screen.dart';
-import 'package:nekochan/utilities/networking.dart';
-import 'package:provider/provider.dart';
 
 final String url = 'https://a.4cdn.org/boards.json';
 
@@ -48,8 +45,6 @@ class _BoardListScreenState extends State<BoardListScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Provider.of<Data>(context, listen: false).setCurrentBoard(
-                      boards[index].letter, boards[index].title);
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(builder: (context) {
                     return BoardScreen(
@@ -59,7 +54,7 @@ class _BoardListScreenState extends State<BoardListScreen> {
                 },
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 150.0),
+                padding: EdgeInsets.symmetric(horizontal: 150.0),
                 child: Divider(
                   thickness: 2.0,
                 ),

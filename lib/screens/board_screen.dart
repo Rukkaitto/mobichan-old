@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nekochan/classes/board.dart';
-import 'package:nekochan/classes/data.dart';
 import 'package:nekochan/constants.dart';
 import 'package:nekochan/widgets/my_drawer.dart';
 import 'package:nekochan/utilities/networking.dart';
 import 'package:nekochan/widgets/thread_preview.dart';
-import 'package:provider/provider.dart';
 
 class BoardScreen extends StatefulWidget {
   static final String id = 'boardscreen';

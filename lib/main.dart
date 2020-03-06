@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nekochan/classes/board.dart';
-import 'package:nekochan/classes/data.dart';
 import 'package:nekochan/screens/board_list_screen.dart';
 import 'package:nekochan/utilities/networking.dart';
-import 'package:provider/provider.dart';
 import 'screens/board_screen.dart';
 
 void main() => runApp(Nekochan());
@@ -38,24 +36,21 @@ class _NekochanState extends State<Nekochan> {
   }
 
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => Data(),
-      child: MaterialApp(
-        theme: ThemeData.light().copyWith(
-          appBarTheme: AppBarTheme(
-            color: Color(0xffd7dbf1),
-          ),
-          scaffoldBackgroundColor: Color(0xffeef2ff),
+    return MaterialApp(
+      theme: ThemeData.light().copyWith(
+        appBarTheme: AppBarTheme(
+          color: Color(0xffd7dbf1),
         ),
-        initialRoute: BoardScreen.id,
-        routes: {
-          BoardScreen.id: (context) => BoardScreen(
-                letter: 'a',
-                name: 'Anime & Manga',
-              ),
-          BoardListScreen.id: (context) => BoardListScreen(boards),
-        },
+        scaffoldBackgroundColor: Color(0xffeef2ff),
       ),
+      initialRoute: BoardScreen.id,
+      routes: {
+        BoardScreen.id: (context) => BoardScreen(
+              letter: 'a',
+              name: 'Anime & Manga',
+            ),
+        BoardListScreen.id: (context) => BoardListScreen(boards),
+      },
     );
   }
 }
