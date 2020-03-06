@@ -49,7 +49,10 @@ class _NekochanState extends State<Nekochan> {
         ),
         initialRoute: BoardScreen.id,
         routes: {
-          BoardScreen.id: (context) => BoardScreen(),
+          BoardScreen.id: (context) => BoardScreen(
+                letter: 'a',
+                name: 'Anime & Manga',
+              ),
           BoardListScreen.id: (context) => BoardListScreen(boards),
         },
       ),

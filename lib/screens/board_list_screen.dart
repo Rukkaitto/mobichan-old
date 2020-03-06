@@ -50,10 +50,12 @@ class _BoardListScreenState extends State<BoardListScreen> {
                 onPressed: () {
                   Provider.of<Data>(context, listen: false).setCurrentBoard(
                       boards[index].letter, boards[index].title);
-                  Navigator.popUntil(
-                    context,
-                    ModalRoute.withName(BoardScreen.id),
-                  );
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return BoardScreen(
+                        name: boards[index].title,
+                        letter: boards[index].letter);
+                  }));
                 },
               ),
               Padding(

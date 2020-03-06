@@ -23,6 +23,7 @@ class MyDrawer extends StatelessWidget {
                 leading: Icon(Icons.burst_mode),
                 title: Text('Boards'),
                 onTap: () {
+                  Navigator.pop(context);
                   Navigator.pushNamed(context, BoardListScreen.id);
                 },
               ),
