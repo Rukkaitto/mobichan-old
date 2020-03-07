@@ -15,4 +15,4 @@ const kSubTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
-const int kThreadPreviewCharacterLimit = 150;
+const int kThreadPreviewCharacterLimit = 200;

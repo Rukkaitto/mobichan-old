@@ -20,39 +20,47 @@ class _BoardScreenState extends State<BoardScreen> {
   var threads = [];
   List<ThreadPreview> threadPreviews = [];
   NetworkHelper networkHelper = NetworkHelper();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     currentBoard = Board(letter: widget.letter, title: widget.name);
-    getBoardData();
+    _refresh();
     super.initState();
   }
 
-  void getBoardData() async {
-    print('Getting data...');
-    var data = await networkHelper
-        .getData('https://a.4cdn.org/${currentBoard.letter}/1.json');
-    threadPreviews.clear();
-    threads = data["threads"];
+  Future<Null> _refresh() {
+    return getBoardData().then((data) {
+      threadPreviews.clear();
+      threads = data["threads"];
 
-    setState(() {
-      for (var thread in threads) {
-        var firstPost = thread['posts'][0];
-        threadPreviews.add(ThreadPreview(
-          now: firstPost['now'],
-          closed: firstPost['closed'],
-          com: firstPost['com'],
-          ext: firstPost['ext'],
-          filename: firstPost['filename'],
-          name: firstPost['name'],
-          sticky: firstPost['sticky'],
-          board: currentBoard.letter,
-          imageId: firstPost['tim'],
-          sub: firstPost['sub'],
-          no: firstPost['no'],
-        ));
-      }
+      setState(() {
+        for (var thread in threads) {
+          var firstPost = thread['posts'][0];
+          threadPreviews.add(ThreadPreview(
+            now: firstPost['now'],
+            closed: firstPost['closed'],
+            com: firstPost['com'],
+            ext: firstPost['ext'],
+            filename: firstPost['filename'],
+            name: firstPost['name'],
+            sticky: firstPost['sticky'],
+            board: currentBoard.letter,
+            imageId: firstPost['tim'],
+            sub: firstPost['sub'],
+            no: firstPost['no'],
+          ));
+        }
+      });
     });
+  }
+
+  Future<dynamic> getBoardData() {
+    print('Getting data...');
+    var data = networkHelper
+        .getData('https://a.4cdn.org/${currentBoard.letter}/1.json');
+    return data;
   }
 
   @override
@@ -65,9 +73,13 @@ class _BoardScreenState extends State<BoardScreen> {
           style: kAppBarTitleTextStyle,
         ),
       ),
-      body: ListView.builder(
-        itemCount: threadPreviews.length,
-        itemBuilder: (context, i) => threadPreviews[i],
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        onRefresh: _refresh,
+        child: ListView.builder(
+          itemCount: threadPreviews.length,
+          itemBuilder: (context, i) => threadPreviews[i],
+        ),
       ),
     );
   }

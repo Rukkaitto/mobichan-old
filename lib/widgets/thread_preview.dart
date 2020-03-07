@@ -1,8 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:html_unescape/html_unescape.dart';
 import 'package:nekochan/constants.dart';
-
-import 'package:html/parser.dart' show parse;
+import 'package:html_unescape/html_unescape.dart';
 
 class ThreadPreview extends StatelessWidget {
   final String now, name, com, filename, ext, board, sub;
@@ -23,19 +22,35 @@ class ThreadPreview extends StatelessWidget {
       this.sub,
       this.no});
 
-  void processCom() {
+  RichText processCom(BuildContext context) {
     HtmlUnescape htmlUnescape = HtmlUnescape();
+    List<String> strs;
+    List<TextSpan> textSpans = List<TextSpan>();
 
     if (com != null) {
       convertedCom = htmlUnescape.convert(com);
       convertedCom = convertedCom.replaceAll('<br>', '\n');
+      convertedCom = convertedCom.replaceAll(
+          new RegExp('<a href=".*">|</a>|</?b>|</?u>|</?i>|</?s>|<wbr>'), '');
 
-      var document = parse(convertedCom);
-      var quotes = document.getElementsByClassName('quote');
+//      if (convertedCom.length > kThreadPreviewCharacterLimit) {
+//        convertedCom =
+//            convertedCom.substring(0, kThreadPreviewCharacterLimit) + '...';
+//      }
 
-      if (quotes.length > 0) {
-        for (var quote in quotes) {
-          print(quote.firstChild);
+      strs = convertedCom.split(new RegExp('<span class="quote">|</span>'));
+
+      for (String str in strs) {
+        if (str.length > 2 ? str.substring(0, 1).contains('>') : false) {
+          textSpans.add(TextSpan(
+            text: str,
+            style: DefaultTextStyle.of(context).style.copyWith(
+                  color: Color(0xff789922),
+                ),
+          ));
+        } else {
+          textSpans.add(
+              TextSpan(text: str, style: DefaultTextStyle.of(context).style));
         }
       }
     } else {
@@ -50,54 +65,71 @@ class ThreadPreview extends StatelessWidget {
 
     if (sub != null) {
       convertedSub = htmlUnescape.convert(sub);
+      convertedSub = convertedSub.replaceAll(
+          new RegExp(
+              '<a href=".*">|</a>|</?b>|</?u>|</?i>|</?s>|<wbr>|<span class="quote">|</span>'),
+          '');
     } else {
       convertedSub = '';
     }
+
+    return RichText(
+      text: TextSpan(
+        children: textSpans,
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    processCom();
+    RichText richText = processCom(context);
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 2.0),
+      padding: EdgeInsets.only(
+        left: 5.0,
+        top: 5.0,
+        right: 5.0,
+      ),
       child: Card(
+        elevation: 3.0,
         color: Color(0xffd6daf0),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Image.network(
-              'https://i.4cdn.org/$board/${imageId}s.jpg',
-              width: 100.0,
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Image.network(
+                  'https://i.4cdn.org/$board/${imageId}s.jpg',
+                  width: 100.0,
+                ),
+              ),
             ),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(left: 10.0),
+                padding: EdgeInsets.all(10.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     // Thread title
-                    Text(
-                      convertedSub,
-                      style: kSubTextStyle,
-                    ),
+                    convertedSub == ''
+                        ? SizedBox()
+                        : Text(
+                            convertedSub,
+                            style: kSubTextStyle,
+                          ),
                     // Username
                     Text(
                       convertedName,
                       style: kNameTextStyle,
                     ),
-                    Text('$now No.$no'),
+                    //Text('$now No.$no'),
                     SizedBox(
                       height: 10.0,
                     ),
                     // Comment
-                    Text(
-                      convertedCom.length > kThreadPreviewCharacterLimit
-                          ? convertedCom.substring(
-                                  0, kThreadPreviewCharacterLimit) +
-                              '...'
-                          : convertedCom,
-                    ),
+                    convertedCom == '' ? SizedBox() : richText,
                   ],
                 ),
               ),
