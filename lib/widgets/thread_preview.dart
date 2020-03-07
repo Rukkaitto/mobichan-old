@@ -74,6 +74,8 @@ class ThreadPreview extends StatelessWidget {
     }
 
     return RichText(
+      maxLines: 5,
+      overflow: TextOverflow.ellipsis,
       text: TextSpan(
         children: textSpans,
       ),
