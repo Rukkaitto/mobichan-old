@@ -90,69 +90,75 @@ class Post extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(
-        left: 5.0,
-        top: 5.0,
-        right: 5.0,
+        left: 3.0,
+        top: 3.0,
+        right: 3.0,
       ),
       child: GestureDetector(
         onTap: onPressed,
         child: Card(
-          elevation: 3.0,
+          elevation: 2.0,
           color: Color(0xffd6daf0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
+            alignment: Alignment.topRight,
             children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(5.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: imageId == null
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  imageId == null
                       ? SizedBox()
-                      : Image.network(
-                          'https://i.4cdn.org/$board/${imageId}s.jpg',
-                          width: 100.0,
+                      : Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(5.0),
+                            child: Image.network(
+                              'https://i.4cdn.org/$board/${imageId}s.jpg',
+                              width: 100.0,
+                            ),
+                          ),
                         ),
-                ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      // Thread title
-                      convertedSub == ''
-                          ? SizedBox()
-                          : Text(
-                              convertedSub,
-                              style: kSubTextStyle,
-                            ),
-                      // Username
-                      Text(
-                        convertedName,
-                        style: kNameTextStyle,
-                      ),
-                      showTimeStamp ? Text('$now No.$no') : SizedBox(),
-                      SizedBox(
-                        height: 10.0,
-                      ),
-                      // Comment
-                      convertedCom == '' ? SizedBox() : richText,
-                      replies == null || images == null
-                          ? SizedBox()
-                          : Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                '${replies}R ${images}I',
-                                style: TextStyle(
-                                  color: Colors.blueGrey,
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // Thread title
+                          convertedSub == ''
+                              ? SizedBox()
+                              : Text(
+                                  convertedSub,
+                                  style: kSubTextStyle,
                                 ),
-                              ),
-                            ),
-                    ],
+                          // Username
+                          Text(
+                            convertedName,
+                            style: kNameTextStyle,
+                          ),
+                          showTimeStamp ? Text('$now No.$no') : SizedBox(),
+                          SizedBox(
+                            height: 10.0,
+                          ),
+                          // Comment
+                          convertedCom == '' ? SizedBox() : richText,
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
+              replies == null || images == null
+                  ? SizedBox()
+                  : Padding(
+                      padding: EdgeInsets.all(5.0),
+                      child: Text(
+                        '${replies}R ${images}I',
+                        style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontSize: 12.0,
+                        ),
+                      ),
+                    ),
             ],
           ),
         ),
