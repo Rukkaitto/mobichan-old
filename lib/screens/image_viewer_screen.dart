@@ -10,9 +10,9 @@ class ImageViewerScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xaa000000),
-      body: Center(
-        child: GestureDetector(
-          onTap: () => Navigator.pop(context),
+      body: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Center(
           child: Image.network('https://i.4cdn.org/$board/$imageId$ext'),
         ),
       ),
