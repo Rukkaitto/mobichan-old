@@ -74,6 +74,7 @@ class _BoardScreenState extends State<BoardScreen> {
   }
 
   Future<dynamic> getBoardData() {
+    print('https://a.4cdn.org/${currentBoard.letter}/catalog.json');
     var data = networkHelper
         .getData('https://a.4cdn.org/${currentBoard.letter}/catalog.json');
     return data;

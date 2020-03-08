@@ -49,13 +49,13 @@ class Post extends StatelessWidget {
 
       for (String str in strs) {
         if (str.length > 3 ? str.substring(0, 2).contains('>>') : false) {
-          int postNo = int.parse(str.replaceAll('>>', ''));
+          String postNo = str.replaceAll('>>', '');
           textSpans.add(
             QuoteLink(
               str,
               tapGestureRecognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  print(postNo);
+                  //TODO: Implement quotelink lookup
                 },
             ),
           );
@@ -121,18 +121,26 @@ class Post extends StatelessWidget {
                   imageId == null
                       ? SizedBox()
                       : Padding(
-                          padding: EdgeInsets.all(5.0),
+                          padding:
+                              EdgeInsets.only(left: 5.0, top: 5.0, bottom: 5.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(5.0),
-                            child: Image.network(
-                              'https://i.4cdn.org/$board/${imageId}s.jpg',
-                              width: 100.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                //TODO: implement image viewer
+                              },
+                              child: Image.network(
+                                'https://i.4cdn.org/$board/${imageId}s.jpg',
+                                width: 120.0,
+                                scale: 0.5,
+                              ),
                             ),
                           ),
                         ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(10.0),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 15.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
