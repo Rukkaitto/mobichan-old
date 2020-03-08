@@ -1,7 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nekochan/constants.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:nekochan/utilities/parsing.dart';
+import 'package:nekochan/widgets/greentext.dart';
+import 'package:nekochan/widgets/quotelink.dart';
 
 class Post extends StatelessWidget {
   final String now, name, com, filename, ext, board, sub;
@@ -38,21 +42,34 @@ class Post extends StatelessWidget {
       convertedCom = htmlUnescape.convert(com);
       convertedCom = convertedCom.replaceAll('<br>', '\n');
       convertedCom = convertedCom.replaceAll(
-          new RegExp('<a href=".*">|</a>|</?b>|</?u>|</?i>|</?s>|<wbr>'), '');
+          new RegExp('</?b>|</?u>|</?i>|</?s>|<wbr>'), '');
 
-      strs = convertedCom.split(new RegExp('<span class="quote">|</span>'));
+      strs = convertedCom.split(new RegExp(
+          '<span class="quote">|</span>|<a .*class="quotelink">|</a>'));
 
       for (String str in strs) {
-        if (str.length > 2 ? str.substring(0, 1).contains('>') : false) {
-          textSpans.add(TextSpan(
-            text: str,
-            style: DefaultTextStyle.of(context).style.copyWith(
-                  color: Color(0xff789922),
-                ),
-          ));
+        if (str.length > 3 ? str.substring(0, 2).contains('>>') : false) {
+          int postNo = int.parse(str.replaceAll('>>', ''));
+          textSpans.add(
+            QuoteLink(
+              str,
+              tapGestureRecognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  print(postNo);
+                },
+            ),
+          );
+        } else if (str.length > 2 ? str.substring(0, 1).contains('>') : false) {
+          textSpans.add(
+            GreenText(str),
+          );
         } else {
           textSpans.add(
-              TextSpan(text: str, style: DefaultTextStyle.of(context).style));
+            TextSpan(
+              text: str,
+              style: DefaultTextStyle.of(context).style,
+            ),
+          );
         }
       }
     } else {
@@ -66,11 +83,7 @@ class Post extends StatelessWidget {
     }
 
     if (sub != null) {
-      convertedSub = htmlUnescape.convert(sub);
-      convertedSub = convertedSub.replaceAll(
-          new RegExp(
-              '<a href=".*">|</a>|</?b>|</?u>|</?i>|</?s>|<wbr>|<span class="quote">|</span>'),
-          '');
+      convertedSub = Parser.removeTags(sub);
     } else {
       convertedSub = '';
     }
@@ -131,11 +144,21 @@ class Post extends StatelessWidget {
                                   style: kSubTextStyle,
                                 ),
                           // Username
-                          Text(
-                            convertedName,
-                            style: kNameTextStyle,
+                          RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: convertedName,
+                                  style: kNameTextStyle,
+                                ),
+                                TextSpan(
+                                  text: showTimeStamp ? ' $now No.$no' : '',
+                                  style: DefaultTextStyle.of(context).style,
+                                ),
+                              ],
+                            ),
                           ),
-                          showTimeStamp ? Text('$now No.$no') : SizedBox(),
+
                           SizedBox(
                             height: 10.0,
                           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nekochan/classes/board.dart';
 import 'package:nekochan/constants.dart';
+import 'package:nekochan/utilities/parsing.dart';
 import 'package:nekochan/widgets/my_drawer.dart';
 import 'package:nekochan/utilities/networking.dart';
 import 'package:nekochan/widgets/post.dart';
@@ -69,7 +70,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.appBarTitle,
+          Parser.removeTags(widget.appBarTitle),
           style: kAppBarTitleTextStyle.copyWith(color: kSubTextStyle.color),
         ),
       ),
