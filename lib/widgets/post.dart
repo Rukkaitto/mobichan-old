@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nekochan/constants.dart';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:nekochan/screens/image_viewer_screen.dart';
 import 'package:nekochan/utilities/parsing.dart';
 import 'package:nekochan/widgets/greentext.dart';
 import 'package:nekochan/widgets/quotelink.dart';
@@ -127,7 +128,16 @@ class Post extends StatelessWidget {
                             borderRadius: BorderRadius.circular(5.0),
                             child: GestureDetector(
                               onTap: () {
-                                //TODO: implement image viewer
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    opaque: false,
+                                    transitionDuration: Duration(seconds: 1),
+                                    pageBuilder: (context, _, __) {
+                                      return ImageViewerScreen(
+                                          board, imageId, ext);
+                                    },
+                                  ),
+                                );
                               },
                               child: Image.network(
                                 'https://i.4cdn.org/$board/${imageId}s.jpg',
