@@ -34,6 +34,7 @@ dev_dependencies:
   html: ^0.14.0+3
   flutter_html: ^0.11.1
   flutter_launcher_icons: ^0.7.4
+  extended_image: ^0.7.1
 
 flutter_icons:
   image_path: "icon/icon.png"
