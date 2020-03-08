@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:nekochan/screens/image_viewer_screen.dart';
 import 'package:nekochan/utilities/parsing.dart';
 import 'package:nekochan/widgets/greentext.dart';
 import 'package:nekochan/widgets/quotelink.dart';
+import 'package:extended_image/extended_image.dart';
 
 class Post extends StatelessWidget {
   final String now, name, com, filename, ext, board, sub;
@@ -50,13 +53,32 @@ class Post extends StatelessWidget {
 
       for (String str in strs) {
         if (str.length > 3 ? str.substring(0, 2).contains('>>') : false) {
-          String postNo = str.replaceAll('>>', '');
+          int postNo;
+          try {
+            postNo = int.parse(str.replaceAll('>>', ''));
+          } catch (e) {
+            postNo = -1;
+          }
+
           textSpans.add(
             QuoteLink(
               str,
               tapGestureRecognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  //TODO: Implement quotelink lookup
+                  showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          backgroundColor: Colors.transparent,
+                          child: Post(
+                            no: Random().nextInt(999999),
+                            name: 'Anonymous',
+                            com: '>>88888888',
+                            now: '3/8/2020 6:52PM',
+                            showTimeStamp: true,
+                          ),
+                        );
+                      });
                 },
             ),
           );
@@ -139,10 +161,11 @@ class Post extends StatelessWidget {
                                   ),
                                 );
                               },
-                              child: Image.network(
+                              child: ExtendedImage.network(
                                 'https://i.4cdn.org/$board/${imageId}s.jpg',
                                 width: 120.0,
                                 scale: 0.5,
+                                retries: 3,
                               ),
                             ),
                           ),
@@ -152,6 +175,7 @@ class Post extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                           vertical: 20.0, horizontal: 15.0),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           // Thread title
@@ -170,8 +194,11 @@ class Post extends StatelessWidget {
                                   style: kNameTextStyle,
                                 ),
                                 TextSpan(
-                                  text: showTimeStamp ? ' $now No.$no' : '',
-                                  style: DefaultTextStyle.of(context).style,
+                                  text: showTimeStamp ? ' No.$no' : '',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12.0,
+                                  ),
                                 ),
                               ],
                             ),

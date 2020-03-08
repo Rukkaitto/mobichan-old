@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 
 class ImageViewerScreen extends StatelessWidget {
-  String board, ext;
-  int imageId;
+  final String board, ext;
+  final int imageId;
 
   ImageViewerScreen(this.board, this.imageId, this.ext);
 

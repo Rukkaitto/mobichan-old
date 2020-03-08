@@ -69,8 +69,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.blueGrey),
         title: Text(
-          Parser.removeTags(widget.appBarTitle),
+          Parser.removeTags(widget.appBarTitle.replaceAll('<br>', ' ')),
           style: kAppBarTitleTextStyle.copyWith(color: kSubTextStyle.color),
         ),
       ),

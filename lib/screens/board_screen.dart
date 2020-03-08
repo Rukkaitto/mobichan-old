@@ -85,6 +85,7 @@ class _BoardScreenState extends State<BoardScreen> {
     return Scaffold(
       drawer: MyDrawer(),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.blueGrey),
         title: Text(
           '/${currentBoard.letter}/ - ${currentBoard.title}',
           style: kAppBarTitleTextStyle,
