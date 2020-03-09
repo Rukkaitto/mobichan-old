@@ -56,6 +56,9 @@ class _BoardScreenState extends State<BoardScreen> {
               showTimeStamp: false,
               images: post["images"],
               replies: post["replies"],
+              width: post['w'],
+              height: post['h'],
+              fsize: post['fsize'],
               onPressed: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return ThreadScreen(
@@ -94,9 +97,11 @@ class _BoardScreenState extends State<BoardScreen> {
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _refresh,
-        child: ListView.builder(
-          itemCount: threadPreviews.length,
-          itemBuilder: (context, i) => threadPreviews[i],
+        child: Scrollbar(
+          child: ListView.builder(
+            itemCount: threadPreviews.length,
+            itemBuilder: (context, i) => threadPreviews[i],
+          ),
         ),
       ),
     );

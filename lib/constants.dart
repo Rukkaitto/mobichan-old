@@ -15,4 +15,9 @@ const kSubTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
 );
 
+const kSmallGreyTextStyle = TextStyle(
+  color: Colors.grey,
+  fontSize: 12.0,
+);
+
 const int kThreadPreviewCharacterLimit = 200;

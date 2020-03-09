@@ -13,7 +13,16 @@ import 'package:extended_image/extended_image.dart';
 
 class Post extends StatelessWidget {
   final String now, name, com, filename, ext, board, sub;
-  final int sticky, closed, imageId, no, maxLines, replies, images;
+  final int sticky,
+      closed,
+      imageId,
+      no,
+      maxLines,
+      replies,
+      images,
+      width,
+      height,
+      fsize;
   String convertedCom, convertedName, convertedSub;
   Function onPressed;
   List<TextSpan> textSpans;
@@ -35,7 +44,20 @@ class Post extends StatelessWidget {
       this.onPressed,
       this.showTimeStamp,
       this.replies,
-      this.images});
+      this.images,
+      this.width,
+      this.height,
+      this.fsize});
+
+  String convertBytes(int bytes) {
+    String result = '';
+    if (bytes >= 1000000) {
+      result = (bytes / 1000000).toStringAsFixed(1) + 'MB';
+    } else if (bytes >= 1000) {
+      result = (bytes / 1000).toStringAsFixed(0) + 'KB';
+    }
+    return result;
+  }
 
   RichText processCom(BuildContext context) {
     HtmlUnescape htmlUnescape = HtmlUnescape();
@@ -135,99 +157,101 @@ class Post extends StatelessWidget {
         child: Card(
           elevation: 2.0,
           color: Color(0xffd6daf0),
-          child: Stack(
-            alignment: Alignment.topRight,
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  imageId == null
-                      ? SizedBox()
-                      : Padding(
-                          padding:
-                              EdgeInsets.only(left: 5.0, top: 5.0, bottom: 5.0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(5.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    opaque: false,
-                                    transitionDuration: Duration(seconds: 1),
-                                    pageBuilder: (context, _, __) {
-                                      return ImageViewerScreen(
-                                          board, imageId, ext);
-                                    },
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                imageId == null
+                    ? SizedBox()
+                    : Padding(
+                        padding:
+                            EdgeInsets.only(left: 5.0, top: 5.0, bottom: 5.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                PageRouteBuilder(
+                                  opaque: false,
+                                  transitionDuration: Duration(seconds: 1),
+                                  pageBuilder: (context, _, __) {
+                                    return ImageViewerScreen(
+                                        board, imageId, ext);
+                                  },
+                                ),
+                              );
+                            },
+                            child: ExtendedImage.network(
+                              'https://i.4cdn.org/$board/${imageId}s.jpg',
+                              width: 120.0,
+                              scale: 0.5,
+                              retries: 3,
+                            ),
+                          ),
+                        ),
+                      ),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        top: 5.0, left: 15.0, bottom: 5.0, right: 5.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            imageId != null
+                                ? Text(
+                                    '$filename$ext ${width}x$height ${convertBytes(fsize)}',
+                                    style: kSmallGreyTextStyle,
+                                  )
+                                : SizedBox(),
+                            // Thread title
+                            convertedSub == ''
+                                ? SizedBox()
+                                : Text(
+                                    convertedSub,
+                                    style: kSubTextStyle,
                                   ),
-                                );
-                              },
-                              child: ExtendedImage.network(
-                                'https://i.4cdn.org/$board/${imageId}s.jpg',
-                                width: 120.0,
-                                scale: 0.5,
-                                retries: 3,
+                            // Username
+                            RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: convertedName,
+                                    style: kNameTextStyle,
+                                  ),
+                                  TextSpan(
+                                    text: showTimeStamp ? ' No.$no' : '',
+                                    style: kSmallGreyTextStyle,
+                                  ),
+                                ],
                               ),
                             ),
-                          ),
+
+                            SizedBox(
+                              height: 5.0,
+                            ),
+                            // Comment
+                            convertedCom == '' ? SizedBox() : richText,
+                          ],
                         ),
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 15.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // Thread title
-                          convertedSub == ''
+                        Align(
+                          child: replies == null || images == null
                               ? SizedBox()
                               : Text(
-                                  convertedSub,
-                                  style: kSubTextStyle,
+                                  '${replies}R ${images}I',
+                                  style: kSmallGreyTextStyle,
                                 ),
-                          // Username
-                          RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: convertedName,
-                                  style: kNameTextStyle,
-                                ),
-                                TextSpan(
-                                  text: showTimeStamp ? ' No.$no' : '',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          SizedBox(
-                            height: 10.0,
-                          ),
-                          // Comment
-                          convertedCom == '' ? SizedBox() : richText,
-                        ],
-                      ),
+                          alignment: Alignment.bottomRight,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              replies == null || images == null
-                  ? SizedBox()
-                  : Padding(
-                      padding: EdgeInsets.all(5.0),
-                      child: Text(
-                        '${replies}R ${images}I',
-                        style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 12.0,
-                        ),
-                      ),
-                    ),
-            ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

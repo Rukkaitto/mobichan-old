@@ -52,6 +52,9 @@ class _ThreadScreenState extends State<ThreadScreen> {
             imageId: firstPost['tim'],
             sub: firstPost['sub'],
             no: firstPost['no'],
+            width: firstPost['w'],
+            height: firstPost['h'],
+            fsize: firstPost['fsize'],
             showTimeStamp: true,
           ));
         }
@@ -78,9 +81,11 @@ class _ThreadScreenState extends State<ThreadScreen> {
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         onRefresh: _refresh,
-        child: ListView.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, i) => posts[i],
+        child: Scrollbar(
+          child: ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, i) => posts[i],
+          ),
         ),
       ),
     );
