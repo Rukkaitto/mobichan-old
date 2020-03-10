@@ -14,7 +14,7 @@ class MyDrawer extends StatelessWidget {
                 height: 20.0,
               ),
               Text(
-                'Nekochan',
+                'Mobichan',
                 style: TextStyle(
                   fontSize: 18.0,
                 ),

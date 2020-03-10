@@ -8,6 +8,7 @@ import 'package:html_unescape/html_unescape.dart';
 import 'package:nekochan/screens/image_viewer_screen.dart';
 import 'package:nekochan/utilities/parsing.dart';
 import 'package:nekochan/widgets/greentext.dart';
+import 'package:nekochan/widgets/image_thumbnail.dart';
 import 'package:nekochan/widgets/quotelink.dart';
 import 'package:extended_image/extended_image.dart';
 
@@ -147,110 +148,85 @@ class Post extends StatelessWidget {
     RichText richText = processCom(context);
 
     return Padding(
-      padding: EdgeInsets.only(
-        left: 3.0,
-        top: 3.0,
-        right: 3.0,
-      ),
-      child: GestureDetector(
-        onTap: onPressed,
-        child: Card(
-          elevation: 2.0,
-          color: Color(0xffd6daf0),
-          child: IntrinsicHeight(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                imageId == null
-                    ? SizedBox()
-                    : Padding(
-                        padding:
-                            EdgeInsets.only(left: 5.0, top: 5.0, bottom: 5.0),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(5.0),
-                          child: GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  opaque: false,
-                                  transitionDuration: Duration(seconds: 1),
-                                  pageBuilder: (context, _, __) {
-                                    return ImageViewerScreen(
-                                        board, imageId, ext);
-                                  },
-                                ),
-                              );
-                            },
-                            child: ExtendedImage.network(
-                              'https://i.4cdn.org/$board/${imageId}s.jpg',
-                              width: 120.0,
-                              scale: 0.5,
-                              retries: 3,
-                            ),
-                          ),
-                        ),
-                      ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            imageId != null
-                                ? Text(
-                                    '$filename$ext ${width}x$height ${convertBytes(fsize)}',
-                                    style: kSmallGreyTextStyle,
-                                  )
-                                : SizedBox(),
-                            // Thread title
-                            convertedSub == ''
-                                ? SizedBox()
-                                : Text(
-                                    convertedSub,
-                                    style: kSubTextStyle,
-                                  ),
-                            // Username
-                            RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: convertedName,
-                                    style: kNameTextStyle,
-                                  ),
-                                  TextSpan(
-                                    text: showTimeStamp ? ' No.$no' : '',
-                                    style: kSmallGreyTextStyle,
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            SizedBox(
-                              height: 5.0,
-                            ),
-                            // Comment
-                            convertedCom == '' ? SizedBox() : richText,
-                          ],
-                        ),
-                        Align(
-                          child: replies == null || images == null
-                              ? SizedBox()
+      padding: EdgeInsets.only(left: 5.0, top: 5.0, right: 5.0),
+      child: MaterialButton(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        padding: EdgeInsets.all(5.0),
+        onPressed: onPressed,
+        elevation: 0.0,
+        color: Color(0xffd6daf0),
+        disabledColor: Color(0xffd6daf0),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              imageId == null
+                  ? Container()
+                  : ImageThumbnail(
+                      imageId: imageId,
+                      board: board,
+                      ext: ext,
+                    ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.all(5.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          imageId != null
+                              ? Text(
+                                  '$filename$ext ${width}x$height ${convertBytes(fsize)}',
+                                  style: kSmallGreyTextStyle,
+                                )
+                              : Container(),
+                          // Thread title
+                          convertedSub == ''
+                              ? Container()
                               : Text(
-                                  '${replies}R ${images}I',
+                                  convertedSub,
+                                  style: kSubTextStyle,
+                                ),
+                          // Username
+                          RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: convertedName,
+                                  style: kNameTextStyle,
+                                ),
+                                TextSpan(
+                                  text: showTimeStamp ? ' No.$no' : '',
                                   style: kSmallGreyTextStyle,
                                 ),
-                          alignment: Alignment.bottomRight,
-                        ),
-                      ],
-                    ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          // Comment
+                          convertedCom == '' ? Container() : richText,
+                        ],
+                      ),
+                      Align(
+                        child: replies == null || images == null
+                            ? Container()
+                            : Text(
+                                '${replies}R ${images}I',
+                                style: kSmallGreyTextStyle,
+                              ),
+                        alignment: Alignment.bottomRight,
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
