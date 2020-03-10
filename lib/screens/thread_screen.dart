@@ -83,6 +83,7 @@ class _ThreadScreenState extends State<ThreadScreen> {
         onRefresh: _refresh,
         child: Scrollbar(
           child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
             itemCount: posts.length,
             itemBuilder: (context, i) => posts[i],
           ),

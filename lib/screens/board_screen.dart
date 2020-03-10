@@ -99,6 +99,7 @@ class _BoardScreenState extends State<BoardScreen> {
         onRefresh: _refresh,
         child: Scrollbar(
           child: ListView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
             itemCount: threadPreviews.length,
             itemBuilder: (context, i) => threadPreviews[i],
           ),
