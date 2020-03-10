@@ -20,18 +20,20 @@ class ImageThumbnail extends StatelessWidget {
             Navigator.of(context).push(
               PageRouteBuilder(
                 opaque: false,
-                transitionDuration: Duration(seconds: 1),
                 pageBuilder: (context, _, __) {
                   return ImageViewerScreen(board, imageId, ext);
                 },
               ),
             );
           },
-          child: ExtendedImage.network(
-            'https://i.4cdn.org/$board/${imageId}s.jpg',
-            width: 120.0,
-            scale: 0.5,
-            retries: 3,
+          child: Hero(
+            tag: imageId.toString(),
+            child: ExtendedImage.network(
+              'https://i.4cdn.org/$board/${imageId}s.jpg',
+              width: 120.0,
+              scale: 0.5,
+              retries: 3,
+            ),
           ),
         ),
       ),

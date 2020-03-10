@@ -16,7 +16,8 @@ class ImageViewerScreen extends StatelessWidget {
         builder: (context) => Stack(
           alignment: Alignment.topRight,
           children: <Widget>[
-            Center(
+            Hero(
+              tag: imageId.toString(),
               child: ExtendedImage.network(
                 'https://i.4cdn.org/$board/$imageId$ext',
                 width: MediaQuery.of(context).size.width,
