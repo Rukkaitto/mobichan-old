@@ -155,8 +155,8 @@ class Post extends StatelessWidget {
         padding: EdgeInsets.all(5.0),
         onPressed: onPressed,
         elevation: 0.0,
-        color: Color(0xffd6daf0),
-        disabledColor: Color(0xffd6daf0),
+        color: Theme.of(context).primaryColor,
+        disabledColor: Theme.of(context).primaryColor,
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +181,7 @@ class Post extends StatelessWidget {
                           imageId != null
                               ? Text(
                                   '$filename$ext ${width}x$height ${convertBytes(fsize)}',
-                                  style: kSmallGreyTextStyle,
+                                  style: Theme.of(context).textTheme.caption,
                                 )
                               : Container(),
                           // Thread title
@@ -189,7 +189,7 @@ class Post extends StatelessWidget {
                               ? Container()
                               : Text(
                                   convertedSub,
-                                  style: kSubTextStyle,
+                                  style: Theme.of(context).textTheme.title,
                                 ),
                           // Username
                           RichText(
@@ -197,11 +197,11 @@ class Post extends StatelessWidget {
                               children: <TextSpan>[
                                 TextSpan(
                                   text: convertedName,
-                                  style: kNameTextStyle,
+                                  style: Theme.of(context).textTheme.subtitle,
                                 ),
                                 TextSpan(
                                   text: showTimeStamp ? ' No.$no' : '',
-                                  style: kSmallGreyTextStyle,
+                                  style: Theme.of(context).textTheme.caption,
                                 ),
                               ],
                             ),
@@ -218,7 +218,7 @@ class Post extends StatelessWidget {
                             ? Container()
                             : Text(
                                 '${replies}R ${images}I',
-                                style: kSmallGreyTextStyle,
+                                style: Theme.of(context).textTheme.caption,
                               ),
                         alignment: Alignment.bottomRight,
                       ),

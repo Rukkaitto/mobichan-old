@@ -75,8 +75,12 @@ class _ThreadScreenState extends State<ThreadScreen> {
         iconTheme: IconThemeData(color: Colors.blueGrey),
         title: Text(
           Parser.removeTags(widget.appBarTitle.replaceAll('<br>', ' ')),
-          style: kAppBarTitleTextStyle.copyWith(color: kSubTextStyle.color),
+          style: Theme.of(context)
+              .textTheme
+              .headline
+              .copyWith(color: kSubTextStyle.color),
         ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,

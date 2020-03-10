@@ -91,8 +91,9 @@ class _BoardScreenState extends State<BoardScreen> {
         iconTheme: IconThemeData(color: Colors.blueGrey),
         title: Text(
           '/${currentBoard.letter}/ - ${currentBoard.title}',
-          style: kAppBarTitleTextStyle,
+          style: Theme.of(context).textTheme.headline,
         ),
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,

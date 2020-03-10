@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nekochan/classes/board.dart';
+import 'package:nekochan/constants.dart';
 import 'package:nekochan/screens/board_list_screen.dart';
 import 'package:nekochan/utilities/networking.dart';
 import 'screens/board_screen.dart';
@@ -37,11 +38,17 @@ class _NekochanState extends State<Nekochan> {
 
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        appBarTheme: AppBarTheme(
-          color: Color(0xffd7dbf1),
-        ),
+      theme: ThemeData(
         scaffoldBackgroundColor: Color(0xffeef2ff),
+        primaryColor: Color(0xffd6daf0),
+        textTheme: TextTheme(
+          title: kSubTextStyle,
+          subtitle: kNameTextStyle,
+          caption: kSmallGreyTextStyle,
+          headline: kAppBarTitleTextStyle,
+          display1: kGreenTextTextStyle,
+          display2: kQuoteLinkTextStyle,
+        ),
       ),
       initialRoute: BoardScreen.id,
       routes: {

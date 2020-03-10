@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nekochan/constants.dart';
 
 class GreenText extends TextSpan {
   String text;
@@ -6,8 +7,6 @@ class GreenText extends TextSpan {
   GreenText(this.text)
       : super(
           text: text,
-          style: TextStyle(
-            color: Color(0xff789922),
-          ),
+          style: kGreenTextTextStyle,
         );
 }

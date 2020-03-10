@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:nekochan/constants.dart';
 
 class QuoteLink extends TextSpan {
   String text;
@@ -8,10 +9,7 @@ class QuoteLink extends TextSpan {
   QuoteLink(this.text, {this.tapGestureRecognizer})
       : super(
           text: text,
-          style: TextStyle(
-            color: Color(0xffdd0000),
-            decoration: TextDecoration.underline,
-          ),
+          style: kQuoteLinkTextStyle,
           recognizer: tapGestureRecognizer,
         );
 }
