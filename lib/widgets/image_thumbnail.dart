@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../screens/image_viewer_screen.dart';
+import '../screens/webm_viewer_screen.dart';
 import 'package:extended_image/extended_image.dart';
 
 class ImageThumbnail extends StatelessWidget {
@@ -17,14 +18,26 @@ class ImageThumbnail extends StatelessWidget {
         borderRadius: BorderRadius.circular(5.0),
         child: GestureDetector(
           onTap: () {
-            Navigator.of(context).push(
-              PageRouteBuilder(
-                opaque: false,
-                pageBuilder: (context, _, __) {
-                  return ImageViewerScreen(board, imageId, ext);
-                },
-              ),
-            );
+            print(ext);
+            if (ext == '.webm') {
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (context, _, __) {
+                    return WebmViewerScreen(board, imageId, ext);
+                  },
+                ),
+              );
+            } else {
+              Navigator.of(context).push(
+                PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (context, _, __) {
+                    return ImageViewerScreen(board, imageId, ext);
+                  },
+                ),
+              );
+            }
           },
           child: Hero(
             tag: imageId.toString(),

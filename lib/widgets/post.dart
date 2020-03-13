@@ -3,14 +3,11 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:nekochan/constants.dart';
 import 'package:html_unescape/html_unescape.dart';
-import 'package:nekochan/screens/image_viewer_screen.dart';
 import 'package:nekochan/utilities/parsing.dart';
 import 'package:nekochan/widgets/greentext.dart';
 import 'package:nekochan/widgets/image_thumbnail.dart';
 import 'package:nekochan/widgets/quotelink.dart';
-import 'package:extended_image/extended_image.dart';
 
 class Post extends StatelessWidget {
   final String now, name, com, filename, ext, board, sub;
