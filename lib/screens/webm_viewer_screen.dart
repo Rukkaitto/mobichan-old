@@ -188,7 +188,7 @@ class _WebmViewerScreenState extends State<WebmViewerScreen> {
                         ),
                         Text(
                           _controller.value.duration == null
-                              ? '0.00'
+                              ? '0:00'
                               : '${_controller.value.duration.inMinutes}:${(_controller.value.duration.inSeconds % 60).toString().padLeft(2, '0')}',
                           style: TextStyle(color: Colors.white),
                         )
