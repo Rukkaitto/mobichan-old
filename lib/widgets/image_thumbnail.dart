@@ -40,7 +40,7 @@ class ImageThumbnail extends StatelessWidget {
             }
           },
           child: Stack(
-            alignment: Alignment.center,
+            alignment: ext == '.webm' ? Alignment.center : Alignment.topLeft,
             children: <Widget>[
               Hero(
                 tag: imageId.toString(),
