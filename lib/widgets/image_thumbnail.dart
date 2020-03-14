@@ -42,13 +42,16 @@ class ImageThumbnail extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              Hero(
-                tag: imageId.toString(),
-                child: ExtendedImage.network(
-                  'https://i.4cdn.org/$board/${imageId}s.jpg',
-                  width: 120.0,
-                  scale: 0.5,
-                  retries: 3,
+              Align(
+                alignment: Alignment.topLeft,
+                child: Hero(
+                  tag: imageId.toString(),
+                  child: ExtendedImage.network(
+                    'https://i.4cdn.org/$board/${imageId}s.jpg',
+                    width: 120.0,
+                    scale: 0.5,
+                    retries: 3,
+                  ),
                 ),
               ),
               ext == '.webm'
