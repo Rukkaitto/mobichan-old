@@ -19,7 +19,7 @@ class BoardScreen extends StatefulWidget {
 class _BoardScreenState extends State<BoardScreen> {
   Board currentBoard;
   var pages = [];
-  List<Post> threadPreviews = [];
+  List posts = [];
   NetworkHelper networkHelper = NetworkHelper();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
@@ -33,46 +33,16 @@ class _BoardScreenState extends State<BoardScreen> {
 
   Future<Null> _refresh() {
     return getBoardData().then((data) {
-      threadPreviews.clear();
       pages = data;
 
-      setState(() {
-        for (var page in pages) {
-          var firstPagePosts = page['threads'];
-          for (var post in firstPagePosts) {
-            threadPreviews.add(Post(
-              now: post['now'],
-              closed: post['closed'],
-              com: post['com'],
-              ext: post['ext'],
-              filename: post['filename'],
-              name: post['name'],
-              sticky: post['sticky'],
-              board: currentBoard.letter,
-              imageId: post['tim'],
-              sub: post['sub'],
-              no: post['no'],
-              maxLines: 5,
-              showTimeStamp: false,
-              images: post["images"],
-              replies: post["replies"],
-              width: post['w'],
-              height: post['h'],
-              fsize: post['fsize'],
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                  return ThreadScreen(
-                    appBarTitle:
-                        post['sub'] == null ? post['com'] : post['sub'],
-                    no: post['no'],
-                    letter: currentBoard.letter,
-                  );
-                }));
-              },
-            ));
-          }
+      for (var page in pages) {
+        var firstPagePosts = page['threads'];
+        for (var post in firstPagePosts) {
+          setState(() {
+            posts.add(post);
+          });
         }
-      });
+      }
     });
   }
 
@@ -100,9 +70,42 @@ class _BoardScreenState extends State<BoardScreen> {
         onRefresh: _refresh,
         child: Scrollbar(
           child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: threadPreviews.length,
-            itemBuilder: (context, i) => threadPreviews[i],
+            itemCount: posts.length,
+            physics: AlwaysScrollableScrollPhysics(),
+            addAutomaticKeepAlives: false,
+            itemBuilder: (context, i) {
+              return Post(
+                now: posts[i]['now'],
+                closed: posts[i]['closed'],
+                com: posts[i]['com'],
+                ext: posts[i]['ext'],
+                filename: posts[i]['filename'],
+                name: posts[i]['name'],
+                sticky: posts[i]['sticky'],
+                board: currentBoard.letter,
+                imageId: posts[i]['tim'],
+                sub: posts[i]['sub'],
+                no: posts[i]['no'],
+                maxLines: 5,
+                showTimeStamp: false,
+                images: posts[i]["images"],
+                replies: posts[i]["replies"],
+                width: posts[i]['w'],
+                height: posts[i]['h'],
+                fsize: posts[i]['fsize'],
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                    return ThreadScreen(
+                      appBarTitle: posts[i]['sub'] == null
+                          ? posts[i]['com']
+                          : posts[i]['sub'],
+                      no: posts[i]['no'],
+                      letter: currentBoard.letter,
+                    );
+                  }));
+                },
+              );
+            },
           ),
         ),
       ),

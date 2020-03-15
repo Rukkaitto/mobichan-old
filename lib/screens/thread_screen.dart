@@ -21,7 +21,7 @@ class ThreadScreen extends StatefulWidget {
 
 class _ThreadScreenState extends State<ThreadScreen> {
   var postsData = [];
-  List<Post> posts = [];
+  List posts = [];
   NetworkHelper networkHelper = NetworkHelper();
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
@@ -34,31 +34,12 @@ class _ThreadScreenState extends State<ThreadScreen> {
 
   Future<Null> _refresh() {
     return getBoardData().then((data) {
-      posts.clear();
       postsData = data["posts"];
-
-      setState(() {
-        for (var post in postsData) {
-          var firstPost = post;
-          posts.add(Post(
-            now: firstPost['now'],
-            closed: firstPost['closed'],
-            com: firstPost['com'],
-            ext: firstPost['ext'],
-            filename: firstPost['filename'],
-            name: firstPost['name'],
-            sticky: firstPost['sticky'],
-            board: widget.letter,
-            imageId: firstPost['tim'],
-            sub: firstPost['sub'],
-            no: firstPost['no'],
-            width: firstPost['w'],
-            height: firstPost['h'],
-            fsize: firstPost['fsize'],
-            showTimeStamp: true,
-          ));
-        }
-      });
+      for (var post in postsData) {
+        setState(() {
+          posts.add(post);
+        });
+      }
     });
   }
 
@@ -87,9 +68,26 @@ class _ThreadScreenState extends State<ThreadScreen> {
         onRefresh: _refresh,
         child: Scrollbar(
           child: ListView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: AlwaysScrollableScrollPhysics(),
+            addAutomaticKeepAlives: false,
             itemCount: posts.length,
-            itemBuilder: (context, i) => posts[i],
+            itemBuilder: (context, i) => Post(
+              now: posts[i]['now'],
+              closed: posts[i]['closed'],
+              com: posts[i]['com'],
+              ext: posts[i]['ext'],
+              filename: posts[i]['filename'],
+              name: posts[i]['name'],
+              sticky: posts[i]['sticky'],
+              board: widget.letter,
+              imageId: posts[i]['tim'],
+              sub: posts[i]['sub'],
+              no: posts[i]['no'],
+              width: posts[i]['w'],
+              height: posts[i]['h'],
+              fsize: posts[i]['fsize'],
+              showTimeStamp: true,
+            ),
           ),
         ),
       ),
