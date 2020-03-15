@@ -32,6 +32,7 @@ class _BoardScreenState extends State<BoardScreen> {
   }
 
   Future<Null> _refresh() {
+    posts.clear();
     return getBoardData().then((data) {
       pages = data;
 
@@ -64,6 +65,59 @@ class _BoardScreenState extends State<BoardScreen> {
           style: Theme.of(context).textTheme.headline,
         ),
         backgroundColor: Theme.of(context).primaryColor,
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (sort) {
+              setState(() {
+                sort();
+              });
+            },
+            itemBuilder: (context) {
+              return <PopupMenuEntry>[
+                PopupMenuItem(
+                  child: Text('Sort by bump order'),
+                  value: () => posts.sort(
+                    (b, a) {
+                      return a['last_modified'].compareTo(b['last_modified']);
+                    },
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Text('Sort by replies'),
+                  value: () => posts.sort(
+                    (b, a) {
+                      return a['replies'].compareTo(b['replies']);
+                    },
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Text('Sort by images'),
+                  value: () => posts.sort(
+                    (b, a) {
+                      return a['images'].compareTo(b['images']);
+                    },
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Text('Sort by newest'),
+                  value: () => posts.sort(
+                    (b, a) {
+                      return a['no'].compareTo(b['no']);
+                    },
+                  ),
+                ),
+                PopupMenuItem(
+                  child: Text('Sort by oldest'),
+                  value: () => posts.sort(
+                    (a, b) {
+                      return a['no'].compareTo(b['no']);
+                    },
+                  ),
+                ),
+              ];
+            },
+          ),
+        ],
       ),
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
