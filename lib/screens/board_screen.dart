@@ -21,12 +21,18 @@ class _BoardScreenState extends State<BoardScreen> {
   var pages = [];
   List posts = [];
   NetworkHelper networkHelper = NetworkHelper();
+  Function order;
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     currentBoard = Board(letter: widget.letter, title: widget.name);
+    order = () => posts.sort(
+          (b, a) {
+            return a['last_modified'].compareTo(b['last_modified']);
+          },
+        );
     _refresh();
     super.initState();
   }
@@ -44,11 +50,11 @@ class _BoardScreenState extends State<BoardScreen> {
           });
         }
       }
+      order();
     });
   }
 
   Future<dynamic> getBoardData() {
-    print('https://a.4cdn.org/${currentBoard.letter}/catalog.json');
     var data = networkHelper
         .getData('https://a.4cdn.org/${currentBoard.letter}/catalog.json');
     return data;
@@ -71,6 +77,7 @@ class _BoardScreenState extends State<BoardScreen> {
               setState(() {
                 sort();
               });
+              order = sort;
             },
             itemBuilder: (context) {
               return <PopupMenuEntry>[
