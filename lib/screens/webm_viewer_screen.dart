@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,32 +17,37 @@ class WebmViewerScreen extends StatefulWidget {
 }
 
 class _WebmViewerScreenState extends State<WebmViewerScreen> {
-  VideoPlayerController _controller;
+  VlcPlayerController _controller;
   double sliderValue = 0.0;
+    bool isPlaying = true;
+    double currentPlayerTime = 0;
 
   @override
   void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-        'https://i.4cdn.org/${widget.board}/${widget.imageId}${widget.ext}')
-      ..initialize().then((_) {
-        setState(() {
-          _controller.play();
-        });
-      });
-    _controller.setLooping(true);
-    _controller.setVolume(0.0);
+
+     super.initState();
+
+    _controller = new VlcPlayerController(onInit: () {
+      _controller.play();
+    });
+
+    _controller.addListener(() {
+      setState( (){});
+    });
 
     Timer.periodic(Duration(seconds: 1), (Timer timer) {
+      String state = _controller.playingState.toString();
       if (this.mounted) {
         setState(() {
-          if (_controller.value.isPlaying &&
-              sliderValue < _controller.value.duration.inSeconds) {
-            sliderValue = _controller.value.position.inSeconds.toDouble();
+          if (state == "PlayingState.PLAYING" &&
+              sliderValue < _controller.duration.inSeconds) {
+            sliderValue = _controller.position.inSeconds.toDouble();
           }
         });
       }
     });
+
+   
   }
 
   @override
@@ -57,14 +64,24 @@ class _WebmViewerScreenState extends State<WebmViewerScreen> {
         builder: (context) => Stack(
           alignment: Alignment.topRight,
           children: <Widget>[
-            _controller.value.initialized
-                ? Center(
-                    child: AspectRatio(
-                      aspectRatio: _controller.value.aspectRatio,
-                      child: VideoPlayer(_controller),
-                    ),
-                  )
-                : Container(),
+             SizedBox(
+              height: 360,
+              child: new VlcPlayer(
+                aspectRatio: 16 / 9,
+                url:
+                    'https://i.4cdn.org/${widget.board}/${widget.imageId}${widget.ext}',
+                controller: _controller,
+                placeholder: Container(
+                  height: 250.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[CircularProgressIndicator()],
+                  ),
+                ),
+              ),
+              ),
+                
+          
             SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(15.0),
@@ -117,7 +134,7 @@ class _WebmViewerScreenState extends State<WebmViewerScreen> {
                     children: <Widget>[
                       IconButton(
                         onPressed: () {
-                          _controller.seekTo(Duration(seconds: 0));
+                          _controller.setTime(0);
                           setState(() {
                             sliderValue = 0.0;
                           });
@@ -129,34 +146,30 @@ class _WebmViewerScreenState extends State<WebmViewerScreen> {
                       ),
                       IconButton(
                         onPressed: () {
-                          setState(() {
-                            _controller.value.isPlaying
-                                ? _controller.pause()
-                                : _controller.play();
-                          });
+                          playOrPauseVideo();
                         },
                         icon: Icon(
-                          _controller.value.isPlaying
+                          isPlaying
                               ? Icons.pause
                               : Icons.play_arrow,
                           color: Colors.white,
                         ),
                       ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _controller.value.volume == 0.0
-                                ? _controller.setVolume(1.0)
-                                : _controller.setVolume(0.0);
-                          });
-                        },
-                        icon: Icon(
-                          _controller.value.volume == 0.0
-                              ? Icons.volume_off
-                              : Icons.volume_up,
-                          color: Colors.white,
-                        ),
-                      ),
+                      // IconButton(
+                      //   onPressed: () {
+                      //     setState(() {
+                      //       _controller.value.volume == 0.0
+                      //           ? _controller.setVolume(1.0)
+                      //           : _controller.setVolume(0.0);
+                      //     });
+                      //   },
+                      //   icon: Icon(
+                      //     _controller.value.volume == 0.0
+                      //         ? Icons.volume_off
+                      //         : Icons.volume_up,
+                      //     color: Colors.white,
+                      //   ),
+                      // ),
                     ],
                   ),
                   Padding(
@@ -173,23 +186,21 @@ class _WebmViewerScreenState extends State<WebmViewerScreen> {
                             activeColor: Colors.white,
                             value: sliderValue,
                             min: 0.0,
-                            max: _controller.value.duration == null
-                                ? 1.0
-                                : _controller.value.duration.inSeconds
-                                    .toDouble(),
+                            max:  _controller.duration == null ? 1.0 :  _controller.duration.inSeconds.toDouble(),
                             onChanged: (progress) {
                               setState(() {
                                 sliderValue = progress.floor().toDouble();
+                                print('set state: $sliderValue');
                               });
-                              _controller.seekTo(
-                                  Duration(seconds: sliderValue.toInt()));
+                              print('set time:  $sliderValue');
+                              _controller.setTime(sliderValue.toInt());
                             },
                           ),
                         ),
                         Text(
-                          _controller.value.duration == null
+                          _controller.duration == null
                               ? '0:00'
-                              : '${_controller.value.duration.inMinutes}:${(_controller.value.duration.inSeconds % 60).toString().padLeft(2, '0')}',
+                              : '${_controller.duration.inMinutes}:${(_controller.duration.inSeconds % 60).toString().padLeft(2, '0')}',
                           style: TextStyle(color: Colors.white),
                         )
                       ],
@@ -203,4 +214,21 @@ class _WebmViewerScreenState extends State<WebmViewerScreen> {
       ),
     );
   }
+    void playOrPauseVideo() {
+    String state = _controller.playingState.toString();
+    
+    if  ( state == "PlayingState.PLAYING" ){
+      _controller.pause();
+     setState(() {
+       isPlaying = false;
+     });
+    } else {
+      _controller.play();
+     setState(() {
+        isPlaying = true;
+     });
+    }
+  
+  }
 }
+
