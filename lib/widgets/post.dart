@@ -1,13 +1,12 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:nekochan/utilities/parsing.dart';
 import 'package:nekochan/widgets/greentext.dart';
-import 'package:nekochan/widgets/image_thumbnail.dart';
 import 'package:nekochan/widgets/quotelink.dart';
+
+import 'greentext.dart';
+import 'image_thumbnail.dart';
 
 class Post extends StatelessWidget {
   final String now, name, com, filename, ext, board, sub;
@@ -21,6 +20,7 @@ class Post extends StatelessWidget {
       width,
       height,
       fsize;
+
   String convertedCom, convertedName, convertedSub;
   Function onPressed;
   List<TextSpan> textSpans;
@@ -47,89 +47,47 @@ class Post extends StatelessWidget {
       this.height,
       this.fsize});
 
-  String convertBytes(int bytes) {
-    String result = '';
-    if (bytes >= 1000000) {
-      result = (bytes / 1000000).toStringAsFixed(1) + 'MB';
-    } else if (bytes >= 1000) {
-      result = (bytes / 1000).toStringAsFixed(0) + 'KB';
-    }
-    return result;
-  }
-
   RichText processCom(BuildContext context) {
     HtmlUnescape htmlUnescape = HtmlUnescape();
     List<String> strs;
     List<TextSpan> textSpans = List<TextSpan>();
 
     if (com != null) {
-      convertedCom = htmlUnescape.convert(com);
-      convertedCom = convertedCom.replaceAll('<br>', '\n');
-      convertedCom = convertedCom.replaceAll(
-          new RegExp('</?b>|</?u>|</?i>|</?s>|<wbr>'), '');
+      convertedCom = htmlUnescape
+          .convert(com)
+          .replaceAll('<br>', '\n')
+          .replaceAll(new RegExp('</?b>|</?u>|</?i>|</?s>|<wbr>'), '');
 
       strs = convertedCom.split(new RegExp(
           '<span class="quote">|</span>|<a .*class="quotelink">|</a>'));
 
       for (String str in strs) {
-        if (str.length > 3 ? str.substring(0, 2).contains('>>') : false) {
-          int postNo;
-          try {
-            postNo = int.parse(str.replaceAll('>>', ''));
-          } catch (e) {
-            postNo = -1;
-          }
+        bool isQuotelink =
+            str.length > 3 ? str.substring(0, 2).contains('>>') : false;
+        bool isGreentext =
+            str.length > 2 ? str.substring(0, 1).contains('>') : false;
+        TextSpan textSpan;
 
-          textSpans.add(
-            QuoteLink(
-              str,
-              tapGestureRecognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          backgroundColor: Colors.transparent,
-                          child: Post(
-                            no: Random().nextInt(999999),
-                            name: 'Anonymous',
-                            com: '>>88888888',
-                            now: '3/8/2020 6:52PM',
-                            showTimeStamp: true,
-                          ),
-                        );
-                      });
-                },
-            ),
+        if (isQuotelink) {
+          textSpan = QuoteLink(
+            str,
+            context: context,
           );
-        } else if (str.length > 2 ? str.substring(0, 1).contains('>') : false) {
-          textSpans.add(
-            GreenText(str),
-          );
+        } else if (isGreentext) {
+          textSpan = GreenText(str);
         } else {
-          textSpans.add(
-            TextSpan(
-              text: str,
-              style: DefaultTextStyle.of(context).style,
-            ),
+          textSpan = TextSpan(
+            text: str,
+            style: DefaultTextStyle.of(context).style,
           );
         }
+
+        textSpans.add(textSpan);
       }
-    } else {
-      convertedCom = '';
     }
 
-    if (name != null) {
-      convertedName = htmlUnescape.convert(name);
-    } else {
-      convertedName = '';
-    }
-
-    if (sub != null) {
-      convertedSub = Parser.removeTags(sub);
-    } else {
-      convertedSub = '';
-    }
+    convertedName = htmlUnescape.convert(name ?? '');
+    convertedSub = Parser.removeTags(sub ?? '');
 
     return RichText(
       maxLines: maxLines,
@@ -177,7 +135,7 @@ class Post extends StatelessWidget {
                         children: <Widget>[
                           imageId != null
                               ? Text(
-                                  '$filename$ext ${width}x$height ${convertBytes(fsize)}',
+                                  '$filename$ext ${width}x$height ${Parser.convertBytes(fsize)}',
                                   style: Theme.of(context).textTheme.caption,
                                 )
                               : Container(),
@@ -185,7 +143,7 @@ class Post extends StatelessWidget {
                           convertedSub == ''
                               ? Container()
                               : Text(
-                                  convertedSub,
+                                  convertedSub ?? '',
                                   style: Theme.of(context).textTheme.title,
                                 ),
                           // Username
@@ -193,7 +151,7 @@ class Post extends StatelessWidget {
                             text: TextSpan(
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: convertedName,
+                                  text: convertedName ?? '',
                                   style: Theme.of(context).textTheme.subtitle,
                                 ),
                                 TextSpan(
@@ -207,7 +165,7 @@ class Post extends StatelessWidget {
                             height: 5.0,
                           ),
                           // Comment
-                          convertedCom == '' ? Container() : richText,
+                          convertedCom == null ? Container() : richText,
                         ],
                       ),
                       Align(

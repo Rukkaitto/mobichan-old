@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nekochan/classes/board.dart';
 import 'package:nekochan/screens/thread_screen.dart';
-import 'package:nekochan/widgets/my_drawer.dart';
 import 'package:nekochan/utilities/networking.dart';
+import 'package:nekochan/widgets/my_drawer.dart';
 import 'package:nekochan/widgets/post.dart';
 
 class BoardScreen extends StatefulWidget {
@@ -137,50 +137,29 @@ class _BoardScreenState extends State<BoardScreen> {
         },
         itemBuilder: (context) {
           return <PopupMenuEntry>[
-            PopupMenuItem(
-              child: Text('Sort by bump order'),
-              value: () => posts.sort(
-                (b, a) {
-                  return a['last_modified'].compareTo(b['last_modified']);
-                },
-              ),
-            ),
-            PopupMenuItem(
-              child: Text('Sort by replies'),
-              value: () => posts.sort(
-                (b, a) {
-                  return a['replies'].compareTo(b['replies']);
-                },
-              ),
-            ),
-            PopupMenuItem(
-              child: Text('Sort by images'),
-              value: () => posts.sort(
-                (b, a) {
-                  return a['images'].compareTo(b['images']);
-                },
-              ),
-            ),
-            PopupMenuItem(
-              child: Text('Sort by newest'),
-              value: () => posts.sort(
-                (b, a) {
-                  return a['no'].compareTo(b['no']);
-                },
-              ),
-            ),
-            PopupMenuItem(
-              child: Text('Sort by oldest'),
-              value: () => posts.sort(
-                (a, b) {
-                  return a['no'].compareTo(b['no']);
-                },
-              ),
-            ),
+            buildPopupMenuItem('Sort by bump order', 'last_modified'),
+            buildPopupMenuItem('Sort by replies', 'replies'),
+            buildPopupMenuItem('Sort by images', 'images'),
+            buildPopupMenuItem('Sort by newest', 'no'),
+            buildPopupMenuItem('Sort by oldest', 'no', reversed: true),
           ];
         },
       ),
     ];
+  }
+
+  PopupMenuItem buildPopupMenuItem(text, property, {reversed}) {
+    return PopupMenuItem(
+      child: Text(text),
+      value: () => posts.sort(
+        (b, a) {
+          if (reversed ?? false) {
+            return b[property].compareTo(a[property]);
+          }
+          return a[property].compareTo(b[property]);
+        },
+      ),
+    );
   }
 
   @override

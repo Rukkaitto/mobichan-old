@@ -10,4 +10,14 @@ class Parser {
         '');
     return convertedStr;
   }
+
+  static String convertBytes(int bytes) {
+    String result = '';
+    if (bytes >= 1000000) {
+      result = (bytes / 1000000).toStringAsFixed(1) + 'MB';
+    } else if (bytes >= 1000) {
+      result = (bytes / 1000).toStringAsFixed(0) + 'KB';
+    }
+    return result;
+  }
 }
