@@ -1,3 +1,7 @@
+# Deprecated
+
+New repo is here => [mobichan](https://github.com/Rukkaitto/mobichan)
+
 # Mobichan - Android 4chan browser made with Flutter
 
 Mobichan is a fast and practical app for browsing the 4chan imageboard.
